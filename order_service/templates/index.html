@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Order Service - Video Game Store</title>
+	<style>
+	    body {
+		font-family: Arial, sans-serif;
+		max-width: 800px;
+		margin: 40px auto;
+		padding: 20px;
+		background: #f4f4f4;
+	    }
+	    h1 { 
+	       color: #2c3e50;
+	       border-bottom: 3px solid #4a90e2;
+	       padding-bottom: 10px
+	       }
+	    h2 {
+	       color: #2c3e50;
+	       margin-top: 30px;
+	       }
+	     .cover {
+		width: 60px;
+		height: 80px;
+		object-fit: cover;
+		border-radius: 5px;
+		background: #ddd;
+		flex-shrink: 0;
+	       }
+	     .cover-placeholder{
+		width: 60px;
+		height: 80px;
+		background: #e0e0e0;
+		border-radius: 5px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 1.5em;
+		flex-shrink:0;
+	       }
+	     .order {
+		background: white;
+		padding: 12px 20px;
+		margin: 10px 0;
+		border-left: 4px;
+		border-radius: 5px;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.08)
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 10px;
+	    }
+	    .order-info {
+		flex: 1;
+		flex-direction: column;
+		gap: 4 px;
+		min-width: 0;
+	    }
+	    .order-id {
+		background: #4a90e2;
+		color: white;
+		padding: 4px 10px;
+		border-radius: 12 px;
+		font-size: 0.85em;
+		font-weight: bold;
+	    }
+	    .order-game {
+		font-weight: bold;
+		font-size: 1.05em;
+	    }
+	    .order-qty {
+		color: #888;
+		font-size: 0.9em;
+		font-style: italic;
+		margin-left: 4px;
+	    }
+	    .status {
+		padding: 5px 12px;
+		border-radius: 12px;
+		font-size: 0.75em;
+		text-transform: uppercase;
+		font-weight: bold;
+		letter-spacing: 0.5px;
+	    }
+	    .status-pending {
+		background: #fff3cd;
+		color: #856404
+	    }
+	    .status-shipped {
+		background: #d4edda
+		color: #155724;
+	    }
+	    .empty {
+		color: #888;
+		font-style: italic;
+		padding: 20px;
+		text-align: center;
+	    }
+	    pre {
+		background: #2c3e50;
+		color: #ecfof1;
+		padding: 15px;
+		border-radius: 5px;
+		overflow-x: auto;
+		font-size: 0.85dm;
+		line-height: 1.5;
+	    }
+	    .stats {
+		display: flex;
+		gap: 15px;
+		margin: 20px 0;
+		flex-wrap: wrap;
+	    }
+	    .stat {
+		background: white;
+		padding: 15px 25px;
+		border-radius: 8px;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+		border-top: 3px solid #4a90e2;
+	    }
+	    .stat-valude {
+		font-size: 1.8em;
+		font-weight: bold;
+		color: #4a90e2;
+	    }
+	    .stat-label {
+		color: #666;
+		font-size: 0.8em;
+		text-transform: uppercase;
+	    }
+	</style>
+</head>
+<body>
+	<h1>- Order Service -</h1>
+	<p1>Video Game Store - Track your orders</p1>
+
+	<div class="stats">
+	     <div class="stat">
+		 <div class="stat-value">{{ orders|length }}</div>
+		 <div class="stat-label">Total Orders</div>
+	     </div>
+	     <div class="stat">
+		<div class="stat-value">
+		      {% set total = 0 %}
+		      {% for o in orders %}{% set total = total +o.quantity %}{% endfor %}
+		      {{ total }}
+	        </div>
+	        <div  class="stat-label">Items</div>
+             </div>
+	</div>
+
+	<h2>- Current Orders -</h2>
+
+	{% if orders %}
+	    {% for order in orders %}
+	    <div class="order">
+		{% if order.cover %}
+			<img src="{{ order.cover }}" alt="{{ order.game }}" class="cover">
+		{% else %}
+			<div class="cover-placeholder">?</div>
+		{% endif %}
+		<div class="order-info">
+		     <span class="order-id">#{{ order.id }}</span>
+		     <span class="order-game">{{ order.game }}</span>
+		     <span class="order-qty">Qty: {{ order.quantity }}</span>
+		</div>
+		<span class="status status-{{ order.status }}">{{ order.status }}</span>
+	   </div>
+	   {% endfor %}
+	{% else %}
+	    <p class="empty">No orders yet.</p>
+	{% endif %}
+
+	<h2>Place an Order</h2>
+	<pre>curl -x POST http://192.168.64.2:5002/orders \ 
+	     -H "Content-Type: application/json" \ 
+	     -d '{"game":"Minecraft","quantity":1}'</pre>
+</body>
+</html>
