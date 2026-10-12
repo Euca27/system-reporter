@@ -1,0 +1,16 @@
+[Unit]
+Description=Video Game Order Service (Flask)
+After=network.target
+
+[Service]
+Type=simple
+User=alex
+WorkingDirectory=/home/alex/services/order_service
+ExecStart=/usr/bin/python3 /home/alex/services/order_service/app.py
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
